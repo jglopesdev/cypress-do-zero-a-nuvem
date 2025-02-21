@@ -12,7 +12,7 @@ describe('Central de Atendimento ao Cliente TAT', () => {
     cy.get('#lastName').type('Lopes')
     cy.get('#email').type('contato@jglopes.dev')
     cy.get('#open-text-area').type(longText, {delay: 0} )
-    cy.get('button[type=submit]').click()
+    cy.contains('button', 'Enviar').click()
     cy.get('.success').should('be.visible')
   })
   it('exibe mensagem de erro ao submeter o formulario com um email com formatação inválida', () => {
@@ -20,8 +20,7 @@ describe('Central de Atendimento ao Cliente TAT', () => {
     cy.get('#lastName').type('Lopes')
     cy.get('#email').type('contato2jglopes.dev')
     cy.get('#open-text-area').type('Um texto qualquer...')
-    cy.get('button[type=submit]').click()
-
+    cy.contains('button', 'Enviar').click()
     cy.get('.error').should('be.visible')
   })
   it('campo telefone continua vazio quando preenchido com valor não-numérico', () => {
@@ -67,17 +66,31 @@ describe('Central de Atendimento ao Cliente TAT', () => {
     cy.get('.error').should('be.visible')
   })
 
-  it.only('envia o formulario com sucesso usando um comando customizado', () => {
-    const data = {
-      firstName: 'João',
-      lastName: 'Lopes',
-      email: 'contato@jglopes.dev',
-      textArea: 'Um texto qualquer para testar'
-    }
-
-
-    cy.fillMandatoryFieldsAndSubmit(data)
+  it('envia o formulario com sucesso usando um comando customizado', () => {
+ 
+    cy.fillMandatoryFieldsAndSubmit({
+      firstName: 'Murilo',
+      lastName: 'Mendonça',
+      email: 'murilinho@jglopes.dev',
+      textArea: 'Um texto qualquer para testar'})
 
     cy.get('.success').should('be.visible')
+  })
+
+  it('seleciona um produto (YouTube) por seu texto', () => {
+    cy.get('#product')
+      .select('YouTube')
+      .should('have.value', 'youtube')
+  })
+
+  it('seleciona um produto (Mentoria) por seu valor', () => {
+    cy.get('#product')
+      .select('mentoria')
+      .should('have.value', 'mentoria')
+  })
+  it.only('seleciona um produto (Blog) por seu indice', () => {
+    cy.get('#product')
+      .select(1)
+      .should('have.value', 'blog')
   })
 })
