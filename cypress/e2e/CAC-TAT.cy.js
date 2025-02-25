@@ -32,7 +32,7 @@ describe('Central de Atendimento ao Cliente TAT', () => {
     cy.get('#firstName').type('João')
     cy.get('#lastName').type('Lopes')
     cy.get('#email').type('contato@jglopes.dev')
-    cy.get('#phone-checkbox').click()
+    cy.get('#phone-checkbox').check()
     cy.get('#open-text-area').type('Um texto qualquer...')
     cy.get('button[type=submit]').click()
     
@@ -88,9 +88,45 @@ describe('Central de Atendimento ao Cliente TAT', () => {
       .select('mentoria')
       .should('have.value', 'mentoria')
   })
-  it.only('seleciona um produto (Blog) por seu indice', () => {
+  it('seleciona um produto (Blog) por seu indice', () => {
     cy.get('#product')
       .select(1)
       .should('have.value', 'blog')
   })
+  it('marca o tipo de atendimento "Feedback"', () => {
+    cy.get('input[type="radio"][value="feedback"]')
+      .check()
+      .should('be.checked')
+  })
+  it('marca cada tipo de atendimento', () => {
+    cy.get('input[type="radio"]')
+      .each((typeOfService) => {
+        cy.wrap(typeOfService)
+          .check()
+          .should('be.checked')
+      })
+  })
+  it('marca ambos checkboxes, depois desmarca o último', () => {
+    cy.get('input[type="checkbox"]')
+      .check()
+      .should('be.checked')
+      .last()
+      .uncheck()
+      .should('not.be.checked')
+  })
+  it('seleciona um arquivo da pasta fixtures', () => {
+    cy.get('#file-upload')
+      .selectFile('cypress/fixtures/example.json')
+      .should((input) => {
+        expect(input[0].files[0].name).to.equal('example.json')
+      })
+  })
+  it.only('seleciona um arquivo simulando um drag-and-drop', () => {
+    cy.get('#file-upload')
+      .selectFile('cypress/fixtures/example.json', { action: 'drag-drop'})
+      .should((input) => {
+        expect(input[0].files[0].name).to.equal('example.json')
+      })
+  })
 })
+
